@@ -1,17 +1,20 @@
-# Build the project using a builder image
-# Image can be found here: https://catalog.redhat.com/software/containers/ubi9/nodejs-16/61a60604c17162a20c1c6a2e
-FROM registry.redhat.io/ubi9/nodejs-16:1-59 as BUILDER
+FROM node:18
 
-ADD ./ $HOME
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
 
 RUN npm install
+# If you are building your code for production
+# RUN npm ci --only=production
 
-# Final image uses minimal version from Red Hat
-# Image can be found here: https://catalog.redhat.com/software/containers/ubi9/nodejs-16-minimal/61a6059abfd4a5234d59621f
-FROM registry.redhat.io/ubi9/nodejs-16-minimal:1-67 
-
-COPY --from=BUILDER $HOME $HOME
+# Bundle app source
+COPY . .
 
 EXPOSE 8080
 
-CMD ["npm", "start"]
+CMD [ "node", "app.js" ]

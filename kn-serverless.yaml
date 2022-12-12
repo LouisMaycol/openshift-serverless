@@ -9,4 +9,6 @@ spec:
   template:
     spec:
       containers:
-        - image: louismaycol/hello-world:v2
+        - image: louismaycol/hello-world:v3
+          ports:
+            - containerPort: 8080
